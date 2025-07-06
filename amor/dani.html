@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Mensaje para Daniel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Dancing+Script:wght@700&family=Garamond&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fira Code', monospace;
+            /* Fondo degradado animado */
+            background: linear-gradient(135deg, #4c1d95, #be185d, #9f1239, #4a044e);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            color: #e0e0e0;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .terminal-main {
+             background-color: rgba(30, 27, 46, 0.85);
+             backdrop-filter: blur(10px);
+             border: 1px solid rgba(255, 255, 255, 0.1);
+             transition: opacity 1.5s ease-out;
+        }
+        .terminal-header {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .cursor {
+            display: inline-block;
+            background-color: #f9a8d4;
+            width: 10px;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { background-color: transparent; }
+            50% { background-color: #f9a8d4; }
+        }
+        
+        .couple-svg {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 1rem;
+        }
+        .couple-group {
+            transform-origin: 100px 180px;
+            animation: sway 5s ease-in-out infinite;
+        }
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2.5deg); }
+            50% { transform: rotate(2.5deg); }
+        }
+        .couple-svg .couple-heart {
+            transform-origin: center;
+            animation: beat 1.3s ease-in-out infinite;
+        }
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.25); }
+            50% { transform: scale(1); }
+        }
+
+        #click-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 50; pointer-events: none; transition: opacity 0.5s ease-out;
+        }
+        .click-prompt {
+            position: absolute; color: #f9a8d4; background-color: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px; border-radius: 10px; font-size: 1rem;
+            animation: float 6s ease-in-out infinite; opacity: 0.9;
+            white-space: nowrap; border: 1px solid #f9a8d4;
+            box-shadow: 0 0 15px rgba(249, 168, 212, 0.3);
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-25px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        #love-rain-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 100; transition: opacity 1.5s ease-out;
+        }
+        .love-item {
+            position: absolute; top: -10%; color: #f43f5e;
+            font-size: 2rem; user-select: none; animation: fall linear infinite;
+        }
+        .love-item.text { color: #f9a8d4; font-weight: bold; }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+        #execution-message {
+            color: #9ca3af;
+            font-size: 1.25rem;
+        }
+        
+        #terminal-content, #final-message {
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* --- ESTILOS DE LA NUEVA ROSA --- */
+        #rose-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 200; opacity: 0; transition: opacity 2s ease-in-out;
+        }
+        .rose-container {
+            position: relative;
+            width: 600px;
+            height: 800px;
+            transform: scale(0.7); /* Ajustar tamaño general */
+        }
+        .glass {
+            position: absolute;
+            height: 800px;
+            width: 600px;
+            background: rgba(255, 255, 255, 0.1); /* Jarrón semi-transparente */
+            backdrop-filter: blur(5px);
+            border-radius: 300px 300px 0px 0px;
+            bottom: 0;
+            left: 0;
+        }
+        .glass:before {
+            content: "";
+            height: 40px;
+            width: 40px;
+            transform-origin: center;
+            border: 25px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100%;
+            position: absolute;
+            left: 256px;
+            top: -74px;
+        }
+        .shine {
+            width: 26px;
+            height: 330px;
+            background: white;
+            opacity: 0.1;
+            position: absolute;
+            left: 85%;
+            top: 200px;
+            border-radius: 100px;
+            z-index: 10;
+        }
+        .petals>div {
+            position: absolute;
+            background: #d52d58;
+            width: 85px;
+            height: 120px;
+            top: 200px;
+        }
+        .rose-container.active .petals>div {
+             transition: all 3s ease-out;
+        }
+        .petals>div:nth-child(1) {
+            border-radius: 15px;
+            box-shadow: 0px 0px 60px rgba(245, 148, 184, 1);
+            left: 268px;
+            top: 200px;
+            background: #d52d58;
+        }
+        .petals>div:nth-child(2), .petals>div:nth-child(4), .petals>div:nth-child(6) {
+            background: #b81b43;
+            left: 230px;
+            border-radius: 0px 50px 0px 50px;
+            transform-origin: bottom right;
+        }
+        .petals>div:nth-child(3), .petals>div:nth-child(5), .petals>div:nth-child(7) {
+            background: #b81b43;
+            left: 300px;
+            border-radius: 50px 0px 50px 0px;
+            transform-origin: bottom left;
+        }
+        .rose-container.active .petals>div:nth-child(2) {
+            z-index: 5; background: #ab1a3f; top: 218px; height: 130px;
+            box-shadow: 0px 0px 60px rgba(245, 148, 184, .5);
+            animation: bloom3 3s ease-in-out, glowing 2.5s 1s ease-in-out infinite;
+            animation-fill-mode: forwards;
+        }
+        .rose-container.active .petals>div:nth-child(3) {
+            z-index: 4; background: #ab1a3f; top: 218px; height: 130px;
+            box-shadow: 0px 0px 60px rgba(245, 148, 184, .5);
+            animation: bloom3 3s ease-in-out, glowing 2.5s 1s ease-in-out infinite;
+            animation-fill-mode: forwards;
+        }
+        .rose-container.active .petals>div:nth-child(4) {
+            z-index: 3; background: #b81b43; top: 213px; height: 135px;
+            box-shadow: 0px 0px 60px rgba(245, 148, 184, .5);
+            animation: bloom4 3s ease-in-out, glowing 2.5s 1s ease-in-out infinite;
+            animation-fill-mode: forwards;
+        }
+        .rose-container.active .petals>div:nth-child(5) {
+            z-index: 2; background: #b81b43; top: 213px; height: 135px;
+            box-shadow: 0px 0px 60px rgba(245, 148, 184, .5);
+            animation: bloom5 3s ease-in-out, glowing 2.5s 1s ease-in-out infinite;
+            animation-fill-mode: forwards;
+        }
+        .rose-container.active .petals>div:nth-child(6) {
+            z-index: 1; background: #c9204b; top: 200px; height: 130px;
+            box-shadow: 0px 0px 60px rgba(245, 148, 184, .3);
+            animation: bloom6 3s ease-in-out, glowing 2.5s 1s ease-in-out infinite;
+            animation-fill-mode: forwards;
+        }
+        .rose-container.active .petals>div:nth-child(7) {
+            z-index: 0; background: #c9204b; top: 200px; height: 130px;
+            box-shadow: 0px 0px 60px rgba(245, 148, 184, .3);
+            animation: bloom7 3s ease-in-out, glowing 2.5s 1s ease-in-out infinite;
+            animation-fill-mode: forwards;
+        }
+        .leaves>div:nth-last-child(1) {
+            position: absolute; width: 55px; height: 30px;
+            background: #338f37; top: 334px; left: 278px; border-radius: 100px;
+        }
+        .leaves>div:nth-child(1) {
+            position: absolute; width: 15px; height: 390px;
+            background: #054c05; top: 308px; left: 300px; border-radius: 0 0 100px 100px;
+        }
+        .leaves>div:nth-child(2) {
+            position: absolute; width: 60px; height: 100px;
+            border-radius: 10px 80px 40px 80px; background: #054c05;
+            transform-origin: bottom; transform: rotate(-30deg);
+            top: 412px; left: 254px; box-shadow: inset 10px 10px #066406;
+        }
+        .leaves>div:nth-child(3) {
+            position: absolute; width: 60px; height: 100px;
+            border-radius: 80px 1px 80px 40px; background: #054c05;
+            transform-origin: bottom; transform: rotate(30deg);
+            top: 360px; left: 300px; box-shadow: inset -10px 10px #066406;
+        }
+        .thorns>div {
+            position: absolute; width: 0; height: 0; top: 200px;
+        }
+        .thorns>div:nth-child(odd) {
+            border-top: 15px solid transparent; border-bottom: 15px solid transparent;
+            border-left: 15px solid #054c05; left: 315px;
+        }
+        .thorns>div:nth-child(even) {
+            border-top: 15px solid transparent; border-bottom: 15px solid transparent;
+            border-right: 15px solid #054c05; left: 285px;
+        }
+        .thorns>div:nth-child(1) { top: 465px; }
+        .thorns>div:nth-child(2) { top: 390px; }
+        .thorns>div:nth-child(4) { top: 525px; }
+        @keyframes bloom3 { 100% { transform: rotate(50deg); } }
+        @keyframes bloom4 { 100% { transform: rotate(-25deg); } }
+        @keyframes bloom5 { 100% { transform: rotate(25deg); } }
+        @keyframes bloom6 { 100% { transform: rotate(-10deg); } }
+        @keyframes bloom7 { 100% { transform: rotate(10deg); } }
+        @keyframes glowing {
+            50% {
+                background: #d7365f;
+                box-shadow: 0px 0px 60px rgba(245, 148, 184, 1);
+            }
+        }
+        #rose-message {
+            opacity: 0;
+            transition: opacity 2s ease-in 3s; /* Aparece después de la animación de floración */
+            font-size: 1.75rem;
+            font-family: 'Garamond', serif;
+            text-align: center;
+            color: white;
+            position: absolute;
+            bottom: 10%;
+            width: 100%;
+            padding: 0 2rem;
+            text-shadow: 0 0 10px #f9a8d4;
+        }
+
+        /* --- ESTILOS DEL MENSAJE FINAL --- */
+        #end-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 300; opacity: 0; transition: opacity 2s ease-in;
+        }
+        #end-message {
+            font-family: 'Dancing Script', cursive;
+            font-size: 6rem;
+            color: #fff;
+            text-shadow: 0 0 15px #f9a8d4, 0 0 25px #f9a8d4, 0 0 35px #fff;
+        }
+        #end-message span {
+            opacity: 0;
+            display: inline-block;
+            animation: fadeInLetter 1s forwards;
+        }
+        @keyframes fadeInLetter {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Capa para los iconos de "Haz Clic" -->
+    <div id="click-overlay"></div>
+    
+    <!-- Capa para la lluvia de amor -->
+    <div id="love-rain-overlay"></div>
+    
+    <!-- Elemento de audio para tu música -->
+    <audio id="background-music" loop>
+        <source src="danielaudio.mp4" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <div id="main-container" class="w-full h-full flex items-center justify-center">
+        <div class="terminal-main w-full max-w-3xl rounded-lg shadow-2xl overflow-hidden z-10">
+            <div class="terminal-header">
+                <div class="terminal-button" style="background-color: #f43f5e;"></div>
+                <div class="terminal-button" style="background-color: #facc15;"></div>
+                <div class="terminal-button" style="background-color: #4ade80;"></div>
+                <span class="ml-2 text-xs text-gray-400">/dev/amor_a_daniel</span>
+            </div>
+            <div id="terminal-content" class="p-6 h-96 overflow-y-auto">
+                <div id="code-lines"></div>
+                <div id="prompt" class="flex items-center">
+                    <span class="text-[#f9a8d4] mr-2">&gt;</span>
+                    <span id="typewriter"></span>
+                    <span class="cursor">&nbsp;</span>
+                </div>
+                <div id="execution-message" class="hidden mt-4"></div>
+            </div>
+            <div id="final-message" class="hidden flex-col items-center justify-center p-8 text-center h-96">
+                <svg class="couple-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <g class="couple-group">
+                        <g><circle cx="75" cy="100" r="15" fill="#f9a8d4"/><path d="M65,115 C 60,145 90,145 85,115 Z" fill="#f9a8d4"/></g>
+                        <g><circle cx="125" cy="100" r="15" fill="#c4b5fd"/><path d="M115,115 C 110,145 140,145 135,115 Z" fill="#c4b5fd"/></g>
+                        <path class="couple-heart" fill="#f43f5e" d="M100,80 C 90,65, 75,70, 75,85 C 75,100, 100,115, 100,115 C 100,115, 125,100, 125,85 C 125,70, 110,65, 100,80 Z"/>
+                    </g>
+                </svg>
+                <h1 class="text-4xl font-bold text-white mb-2">¡Hola, Daniel!</h1>
+                <p class="text-xl text-[#e0e0e0]">He estado "programando" algo muy especial para ti.</p>
+                <p class="text-xl text-[#e0e0e0] mt-4">Mi código es simple y mi lógica es clara:</p>
+                <p class="text-2xl font-bold mt-4 px-4 py-2 rounded-lg bg-[#f9a8d4] text-[#4c1d95]">Te amo más de lo que las palabras pueden expresar.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Escena de la rosa -->
+    <div id="rose-screen" style="opacity: 0; pointer-events: none;">
+        <div class="rose-container" id="rose-container">
+            <div class="glass">
+                <div class="shine"></div>
+            </div>
+            <div class="thorns">
+                <div></div><div></div><div></div><div></div>
+            </div>
+            <div class="leaves">
+                <div></div><div></div><div></div><div></div>
+            </div>
+            <div class="petals">
+                <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+            </div>
+        </div>
+        <p id="rose-message">Mi amor por ti durará hasta que caiga el último pétalo ❤️</p>
+    </div>
+
+    <!-- Escena final -->
+    <div id="end-screen" style="opacity: 0; pointer-events: none;">
+        <h1 id="end-message"></h1>
+    </div>
+
+    <script>
+        const codeLinesContainer = document.getElementById('code-lines');
+        const typewriterElement = document.getElementById('typewriter');
+        const terminalContent = document.getElementById('terminal-content');
+        const finalMessage = document.getElementById('final-message');
+        const clickOverlay = document.getElementById('click-overlay');
+        const loveRainOverlay = document.getElementById('love-rain-overlay');
+        const music = document.getElementById('background-music');
+        const mainContainer = document.getElementById('main-container');
+        const roseScreen = document.getElementById('rose-screen');
+        const endScreen = document.getElementById('end-screen');
+        const executionMessageEl = document.getElementById('execution-message');
+        const promptEl = document.getElementById('prompt');
+
+        const codeToType = [
+            { text: "// Iniciando sistema de amor v2.0...", color: '#9ca3af' },
+            { text: "import { Corazon } from 'sentimientos/profundos';", color: '#c4b5fd' },
+            { text: "import { Sonrisa } from 'recuerdos/felices';", color: '#c4b5fd' },
+            { text: "", color: 'transparent' },
+            { text: "const miAmor = new Corazon({", color: '#e0e0e0' },
+            { text: "  destinatario: 'Daniel',", color: '#fde047' },
+            { text: "  intensidad: 'infinita'", color: '#fde047' },
+            { text: "});", color: '#e0e0e0' },
+            { text: "", color: 'transparent' },
+            { text: "function declararSentimientos() {", color: '#a5b4fc' },
+            { text: "  while (true) {", color: '#d1d5db' },
+            { text: "    miAmor.latirConFuerza();", color: '#86efac' },
+            { text: "    Sonrisa.recordarMomentosJuntos();", color: '#86efac' },
+            { text: "  }", color: '#d1d5db' },
+            { text: "}", color: '#a5b4fc' },
+            { text: "", color: 'transparent' },
+            { text: "declararSentimientos();", color: '#f472b6' }
+        ];
+
+        let lineIndex = 0;
+
+        function typeLine() {
+            if (lineIndex < codeToType.length) {
+                const lineInfo = codeToType[lineIndex];
+                let charIndex = 0;
+                typewriterElement.textContent = '';
+                typewriterElement.style.color = lineInfo.color;
+
+                const typingInterval = setInterval(() => {
+                    if (charIndex < lineInfo.text.length) {
+                        typewriterElement.textContent += lineInfo.text.charAt(charIndex);
+                        charIndex++;
+                    } else {
+                        clearInterval(typingInterval);
+                        const completedLine = document.createElement('div');
+                        completedLine.textContent = lineInfo.text;
+                        completedLine.style.color = lineInfo.color;
+                        if (lineInfo.text === '') {
+                            completedLine.innerHTML = '&nbsp;';
+                        }
+                        codeLinesContainer.appendChild(completedLine);
+                        terminalContent.scrollTop = terminalContent.scrollHeight;
+                        lineIndex++;
+                        setTimeout(typeLine, 200);
+                    }
+                }, 50);
+            } else {
+                setTimeout(showExecutionMessage, 500);
+            }
+        }
+        
+        function showExecutionMessage() {
+            promptEl.classList.add('hidden');
+            executionMessageEl.classList.remove('hidden');
+            const text = "// Ejecutando... Proceso completado con 100% de amor.";
+            let charIndex = 0;
+            const typingInterval = setInterval(() => {
+                if(charIndex < text.length) {
+                    executionMessageEl.textContent += text.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typingInterval);
+                    setTimeout(showFinalMessage, 1200);
+                }
+            }, 60);
+        }
+
+        function startLoveRain() {
+            const items = ['❤️', '😘', '💖', 'TE AMO', '💋'];
+            const rainInterval = setInterval(() => {
+                const loveItem = document.createElement('div');
+                const itemContent = items[Math.floor(Math.random() * items.length)];
+                loveItem.classList.add('love-item');
+                loveItem.textContent = itemContent;
+                if(itemContent === 'TE AMO') loveItem.classList.add('text');
+                loveItem.style.left = `${Math.random() * 100}vw`;
+                loveItem.style.animationDuration = `${Math.random() * 3 + 4}s`;
+                loveItem.style.fontSize = `${Math.random() * 1.5 + 1}rem`;
+                loveRainOverlay.appendChild(loveItem);
+                setTimeout(() => loveItem.remove(), 7000);
+            }, 200);
+            
+            setTimeout(() => clearInterval(rainInterval), 8000);
+        }
+
+        function showEndScreen() {
+            roseScreen.style.opacity = '0';
+            setTimeout(() => {
+                roseScreen.remove();
+                endScreen.style.opacity = '1';
+                endScreen.style.pointerEvents = 'auto';
+
+                const endMessage = document.getElementById('end-message');
+                const text = "TE AMO MUCHO DANIEL";
+                text.split('').forEach((char, index) => {
+                    const span = document.createElement('span');
+                    span.textContent = char === ' ' ? '\u00A0' : char; // Handle spaces
+                    span.style.animationDelay = `${index * 0.15}s`;
+                    endMessage.appendChild(span);
+                });
+
+            }, 2000); // Wait for rose screen to fade out
+        }
+
+        function startRoseAnimation() {
+            document.getElementById('rose-container').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('rose-message').style.opacity = '1';
+            }, 4000); 
+
+            // Transition to the final message
+            setTimeout(showEndScreen, 8000);
+        }
+
+        function showRoseScreen() {
+            mainContainer.style.opacity = '0';
+            loveRainOverlay.style.opacity = '0';
+            setTimeout(() => {
+                mainContainer.remove();
+                loveRainOverlay.remove();
+                roseScreen.style.opacity = '1';
+                roseScreen.style.pointerEvents = 'auto';
+                startRoseAnimation();
+            }, 1500);
+        }
+
+        function showFinalMessage() {
+            const terminalContentContainer = document.getElementById('terminal-content');
+            terminalContentContainer.style.opacity = '0';
+            
+            setTimeout(() => {
+                terminalContentContainer.style.display = 'none';
+                finalMessage.classList.remove('hidden');
+                finalMessage.classList.add('flex');
+                finalMessage.style.opacity = '0';
+                
+                requestAnimationFrame(() => {
+                    finalMessage.style.opacity = '1';
+                });
+
+                startLoveRain();
+                setTimeout(showRoseScreen, 9000);
+            }, 1000);
+        }
+
+        window.onload = () => {
+            const iconCount = 15;
+            const iconText = '👆 Haz Clic Aquí';
+            for (let i = 0; i < iconCount; i++) {
+                const icon = document.createElement('div');
+                icon.classList.add('click-prompt');
+                icon.innerHTML = iconText;
+                icon.style.left = `${Math.random() * 90}vw`;
+                icon.style.top = `${Math.random() * 90}vh`;
+                icon.style.animationDelay = `${Math.random() * 6}s`;
+                clickOverlay.appendChild(icon);
+            }
+
+            document.body.addEventListener('click', () => {
+                if (music) {
+                    music.play().catch(error => console.log("La reproducción automática fue bloqueada."));
+                }
+                if (clickOverlay) {
+                    clickOverlay.style.opacity = '0';
+                    setTimeout(() => clickOverlay.remove(), 500);
+                }
+                typeLine();
+            }, { once: true });
+        };
+    </script>
+</body>
+</html>
